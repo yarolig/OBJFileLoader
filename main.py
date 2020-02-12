@@ -29,6 +29,7 @@ glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
 
 # LOAD OBJECT AFTER PYGAME INIT
 obj = OBJ(sys.argv[1], swapyz=True)
+obj.generate()
 
 clock = pygame.time.Clock()
 
@@ -74,6 +75,6 @@ while 1:
     glTranslate(tx/20., ty/20., - zpos)
     glRotate(ry, 1, 0, 0)
     glRotate(rx, 0, 1, 0)
-    glCallList(obj.gl_list)
+    obj.render()
 
     pygame.display.flip()

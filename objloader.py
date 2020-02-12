@@ -82,6 +82,7 @@ class OBJ:
                         norms.append(0)
                 self.faces.append((face, norms, texcoords, material))
 
+    def generate(self):
         self.gl_list = glGenLists(1)
         glNewList(self.gl_list, GL_COMPILE)
         glEnable(GL_TEXTURE_2D)
@@ -107,3 +108,9 @@ class OBJ:
             glEnd()
         glDisable(GL_TEXTURE_2D)
         glEndList()
+
+    def render(self):
+        glCallList(self.gl_list)
+
+    def free(self):
+        glDeleteLists([self.gl_list])
