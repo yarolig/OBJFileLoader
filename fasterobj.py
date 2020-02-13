@@ -5,6 +5,7 @@
 # and they should load from the pickle file quickly, and render quickly.
 
 import pygame, ctypes
+import os
 from OpenGL.GL import *
 from OpenGL.arrays import vbo
 from numpy import array
@@ -25,6 +26,7 @@ class MTL(object):
         """Read data from the file"""
         self.contents = {}
         mtl = None
+        dirname = os.path.dirname(filename)
         for line in open(filename, "r"):
             if line.startswith('#'): continue
             values = line.split()
@@ -34,7 +36,8 @@ class MTL(object):
             elif mtl is None:
                 raise ValueError("mtl file doesn't start with newmtl stmt")
             elif values[0] == 'map_Kd':
-                mtl[values[0]] = values[1]
+                imagename = os.path.join(dirname, values[1])
+                mtl[values[0]] = imagename
                 surf = pygame.image.load(mtl['map_Kd'])
                 mtl["image"] = pygame.image.tostring(surf, 'RGBA', 1)
                 mtl["ix"], mtl["iy"] = surf.get_rect().size
@@ -111,6 +114,7 @@ class OBJ(object):
         self.normals = []
         self.texcoords = []
         self.mfaces = []
+        dirname = os.path.dirname(filename)
 
         material = None
         lines = open(filename, "r").read().replace("\\\n", " ").splitlines()
@@ -134,7 +138,7 @@ class OBJ(object):
                 else:
                     material = values[1]
             elif values[0] == 'mtllib':
-                self.mtl = MTL(values[1])  # TODO: multiple files?
+                self.mtl = MTL(os.path.join(dirname, values[1]))  # TODO: multiple files?
             elif values[0] == 'p':
                 raise NotImplementedError
             elif values[0] == 'l':
@@ -229,7 +233,7 @@ class OBJ(object):
 
 class OBJ_array(OBJ):
     """3-D model using vertex arrays"""
-    
+
     def process(self):
         """Build index list for vertex arrays"""
         self.indices = []
@@ -351,13 +355,13 @@ if __name__ == "__main__":
     from pygame.locals import *
     from pygame.constants import *
     from OpenGL.GLU import *
-     
+
     pygame.init()
     viewport = (800,600)
     hx = viewport[0]/2
     hy = viewport[1]/2
     srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
-     
+
     glLightfv(GL_LIGHT0, GL_POSITION,  (-40, 200, 100, 0.0))
     glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
     glLightfv(GL_LIGHT0, GL_DIFFUSE, (0.5, 0.5, 0.5, 1.0))
@@ -366,19 +370,19 @@ if __name__ == "__main__":
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_DEPTH_TEST)
     glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
-     
+
     # LOAD OBJECT AFTER PYGAME INIT
     obj = OBJ_vbo(sys.argv[1])
 
     clock = pygame.time.Clock()
-     
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     width, height = viewport
     gluPerspective(90.0, width/float(height), 1, 1000.0)
     glEnable(GL_DEPTH_TEST)
     glMatrixMode(GL_MODELVIEW)
-     
+
 
     phi, theta, d = 1., 1., 30.
     rx, ry = (0,-90)
