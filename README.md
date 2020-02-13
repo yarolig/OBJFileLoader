@@ -16,7 +16,6 @@ Import it:
 After you initialise pygame and PyOpenGL you can load objects.
 
     box = OBJ('path/to/box.obj')
-    box.generate()
     
 Material and texture files should be inside 'path/to' directory.
     

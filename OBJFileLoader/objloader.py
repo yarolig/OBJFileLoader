@@ -4,6 +4,7 @@ from OpenGL.GL import *
 
 
 class OBJ:
+    generate_on_init = True
     @classmethod
     def loadTexture(cls, imagefile):
         surf = pygame.image.load(imagefile)
@@ -85,6 +86,8 @@ class OBJ:
                     else:
                         norms.append(0)
                 self.faces.append((face, norms, texcoords, material))
+        if self.generate_on_init:
+            self.generate()
 
     def generate(self):
         self.gl_list = glGenLists(1)
