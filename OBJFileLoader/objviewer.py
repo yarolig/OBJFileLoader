@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Basic OBJ file viewer. needs objloader from:
 #  http://www.pygame.org/wiki/OBJFileLoader
 # LMB + move: rotate

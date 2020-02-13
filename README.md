@@ -29,3 +29,8 @@ To draw the object position it where you want and call render().
    
 If you need to change behavior of texture loading or use VBO instead of lists create a subclass and override loadTexture() or generate().
 
+# Viewer
+
+To view an OBJ-file run:
+
+    python OBJFileLoader/objviewer.py path/to/model.obj
